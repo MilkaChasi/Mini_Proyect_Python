@@ -12,23 +12,35 @@ def obtener_datos(pagina=1, limite=10):
         '_page': pagina,
         '_limit': limite
     }
-    
-    respuesta = requests.get(url, params=params)
-    if respuesta.status_code == 200: 
-        product = json.loads(respuesta.content)  
-        print(type(product))
+     
+    try: 
+      respuesta = requests.get(url, params = params)
+      if respuesta.status_code == 200: 
+            product = json.loads(respuesta.content)  
+            print(type(product))
 
     #Ordenar la columna postId de forma ascendente
-        productos_ordenados = sorted(product, key=lambda x: int(x['postId']))
+            productos_ordenados = sorted(product, key=lambda x: int(x['postId']))
     #Imprimir encabezados
-        print(f" {'ID_Usuario':<10} {'ID':<8} {'Nombre':<30} {'Email':<30} {'Comentario':<10}")  # Encabezados alineados
+            print(f" {'ID_Usuario':<10} {'ID':<8} {'Nombre':<30} {'Email':<30} {'Comentario':<10}")  # Encabezados alineados
     # Imprimir los productos ordenados en su respectiva columna
-        for producto in productos_ordenados:
-            print(f"{producto['postId']:<12} {producto['id']:<5} {producto['name']:<25} {producto['email']:<20} {producto['body']:<10}")   
-        
+            for producto in productos_ordenados:
+                print(f"{producto['postId']:<12} {producto['id']:<5} {producto['name']:<25} {producto['email']:<20} {producto['body']:<10}")   
+       
         # Guardar en archivo JSON
-        guardar_en_json(product)
-        print(f"Datos obtenidos exitosamente para la página {pagina}.")
+            guardar_en_json(product)
+            print(f"Datos obtenidos exitosamente para la página {pagina}.")
+
+    except requests.ConnectionError:
+        print('Error: No se pudo conectar al servidor.')
+    except requests.Timeout:
+        print('Error: La solicitud ha superado el tiempo.')
+    except requests.HTTPError as e:
+        print(f'Error HTTP: {e.response.status_code} - {e.response.reason}')
+    except json.JSONDecodeError:
+        print('Error: No se pudo decodificar la respuesta JSON.')
+    except Exception as e:
+        print(f'Error inesperado: {e}')
         
         
 # Guardar datos en un archivo JSON
