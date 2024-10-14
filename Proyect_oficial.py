@@ -14,7 +14,7 @@ def obtener_datos(pagina=1, limite=10):
     }
      
     try: 
-      respuesta = requests.get(url, params = params)
+      respuesta = requests.get(url, params = params, timeout=5)
       if respuesta.status_code == 200: 
             product = json.loads(respuesta.content)  
             print(type(product))
@@ -55,12 +55,25 @@ obtener_datos(pagina=1, limite=10)
 
 
 #Guardar los datos
+
 def guardar_dato(id, nombre, email, comentario):
     parametros = { 'id': id, 'name': nombre, 'email':email, 'body': comentario }
-    peticion = requests.post(url, json=parametros)
-    respuesta = peticion.json()
-   
-    print(respuesta,'Dato guardado')
+    try:
+        peticion = requests.post(url, json=parametros, timeout=5)
+        peticion.raise_for_status() 
+        respuesta = peticion.json()
+        print(respuesta, 'Dato guardado')
+
+    except requests.ConnectionError:
+        print('Error: No se pudo conectar al servidor.')
+    except requests.Timeout:
+        print('Error: La solicitud ha superado el tiempo.')
+    except requests.HTTPError as e:
+        print(f'Error HTTP: {e.response.status_code} - {e.response.reason}')
+    except json.JSONDecodeError:
+        print('Error: No se pudo decodificar la respuesta JSON.')
+    except Exception as e:
+        print(f'Error inesperado: {e}')
 #guardar_dato(501, 'katy Lopez', 'katylop@hotmail.com', 'cometario de ejemplo para prueba1')
 
 
@@ -68,18 +81,42 @@ def guardar_dato(id, nombre, email, comentario):
 #Actualizar los datos
 def actualizar_dato(id, nombre, email, comentario):
     parametros = { 'id': id, 'name': nombre, 'email':email, 'body': comentario }
-    peticion = requests.put(url + '/' + str(id), json=parametros)
-    respuesta = peticion.json()
-   
-    print(respuesta,'Dato actualizado')     
+    try:
+        peticion = requests.put(url + '/' + str(id), json=parametros, timeout=5)
+        peticion.raise_for_status() 
+        respuesta = peticion.json()
+        print(respuesta, 'Dato actualizado')
+
+    except requests.ConnectionError:
+        print('Error: No se pudo conectar al servidor.')
+    except requests.Timeout:
+        print('Error: La solicitud ha superado el tiempo.')
+    except requests.HTTPError as e:
+        print(f'Error HTTP: {e.response.status_code} - {e.response.reason}')
+    except json.JSONDecodeError:
+        print('Error: No se pudo decodificar la respuesta JSON.')
+    except Exception as e:
+        print(f'Error inesperado: {e}')    
 #actualizar_dato(1, 'Moni Smith', 'monismith@hotmail.com', 'cometario de ejemplo para prueba2')
 
 
 
 #Eliminar los datos
 def eliminar_dato(id):
-    peticion = requests.delete(url + '/' + str(id))
-    respuesta = peticion.json()
-    
-    print(respuesta,'Dato eliminado')
-#eliminar_dato(501)    
+    try:
+        peticion = requests.delete(url + '/' + str(id), timeout=5)
+        peticion.raise_for_status() 
+        respuesta = peticion.json()
+        print(respuesta, 'Dato eliminado')
+
+    except requests.ConnectionError:
+        print('Error: No se pudo conectar al servidor.')
+    except requests.Timeout:
+        print('Error: La solicitud ha superado el tiempo.')
+    except requests.HTTPError as e:
+        print(f'Error HTTP: {e.response.status_code} - {e.response.reason}')
+    except json.JSONDecodeError:
+        print('Error: No se pudo decodificar la respuesta JSON.')
+    except Exception as e:
+        print(f'Error inesperado: {e}')
+#eliminar_dato(501)
