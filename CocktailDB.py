@@ -31,38 +31,29 @@ def mostrar():
 def guardar(id, nombre, imagen):
     parametros = { 'idDrink': id, 'strDrink': nombre, 'strDrinkThumb': imagen }
     peticion = requests.post(url, parametros)
-    respuesta = json.loads(peticion.content)
+    respuesta = peticion.json()
+   
+    print(respuesta,'Producto guardado')
 
 
-#guardar('17841', 'Margarita', 'https://www.recetasderechupete.com/wp-content/uploads/2024/03/coctel_margarita_marie_brizard-1200x828.jpg')
+#guardar(17841, 'Margarita', 'https://www.recetasderechupete.com/wp-content/uploads/2024/03/coctel_margarita_marie_brizard-1200x828.jpg')
 
 
 
 def actualizar(id, nombre, imagen):
     parametros = { 'idDrink': id, 'strDrink': nombre, 'strDrinkThumb': imagen }
-    peticion = requests.put(url + '/' + id ,parametros)
-    respuesta = json.loads(peticion.content)
+    peticion = requests.put(url + '/' + str(id), json=parametros)
+    respuesta = peticion.json()
+   
+    print(respuesta,'Producto actualizado')
+
+#actualizar(15300, 'Gone', 'https://www.thecocktaildb.com/images/media/drink/xtuyqv1472669026.jpg')
 
 
 def eliminar(id):
-    peticion = requests.delete(url + '/' + id)
-    respuesta = json.loads(peticion.content)
+    peticion = requests.delete(url + '/' + str(id))
+    respuesta = peticion.json()
+   
+    print(respuesta,'Producto eliminado')
 
-
-def procesar(respuesta, mensaje):
-    status = respuesta[0]['status']
-    if status == 'error':
-        claves = []
-        errores = respuesta[1]['errors']
-        for err in errores:
-            claves.append(err)
-        for c in claves:
-            print(errores[c][0])
-                
-
-
-    else:
-        print(mensaje)
-
-
-mostrar()
+#eliminar(17841)
