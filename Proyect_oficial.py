@@ -5,6 +5,19 @@ import json
 url = 'https://jsonplaceholder.typicode.com/comments'
 
 
+#Exepciones
+def manejar_excepcion(e):
+    if isinstance(e, requests.ConnectionError):
+        print('Error: No se pudo conectar al servidor.')
+    elif isinstance(e, requests.Timeout):
+        print('Error: La solicitud ha superado el tiempo.')
+    elif isinstance(e, requests.HTTPError):
+        print(f'Error HTTP: {e.response.status_code} - {e.response.reason}')
+    elif isinstance(e, json.JSONDecodeError):
+        print('Error: No se pudo decodificar la respuesta JSON.')
+    else:
+        print(f'Error inesperado: {e}')
+
 #Obtener los datos
 def obtener_datos(pagina=1, limite=10):
     
@@ -31,17 +44,8 @@ def obtener_datos(pagina=1, limite=10):
             guardar_en_json(product)
             print(f"Datos obtenidos exitosamente para la página {pagina}.")
 
-    except requests.ConnectionError:
-        print('Error: No se pudo conectar al servidor.')
-    except requests.Timeout:
-        print('Error: La solicitud ha superado el tiempo.')
-    except requests.HTTPError as e:
-        print(f'Error HTTP: {e.response.status_code} - {e.response.reason}')
-    except json.JSONDecodeError:
-        print('Error: No se pudo decodificar la respuesta JSON.')
     except Exception as e:
-        print(f'Error inesperado: {e}')
-        
+      manejar_excepcion(e)
         
 # Guardar datos en un archivo JSON
 def guardar_en_json(data):
@@ -64,16 +68,8 @@ def guardar_dato(id, nombre, email, comentario):
         respuesta = peticion.json()
         print(respuesta, 'Dato guardado')
 
-    except requests.ConnectionError:
-        print('Error: No se pudo conectar al servidor.')
-    except requests.Timeout:
-        print('Error: La solicitud ha superado el tiempo.')
-    except requests.HTTPError as e:
-        print(f'Error HTTP: {e.response.status_code} - {e.response.reason}')
-    except json.JSONDecodeError:
-        print('Error: No se pudo decodificar la respuesta JSON.')
     except Exception as e:
-        print(f'Error inesperado: {e}')
+     manejar_excepcion(e)
 #guardar_dato(501, 'katy Lopez', 'katylop@hotmail.com', 'cometario de ejemplo para prueba1')
 
 
@@ -87,16 +83,8 @@ def actualizar_dato(id, nombre, email, comentario):
         respuesta = peticion.json()
         print(respuesta, 'Dato actualizado')
 
-    except requests.ConnectionError:
-        print('Error: No se pudo conectar al servidor.')
-    except requests.Timeout:
-        print('Error: La solicitud ha superado el tiempo.')
-    except requests.HTTPError as e:
-        print(f'Error HTTP: {e.response.status_code} - {e.response.reason}')
-    except json.JSONDecodeError:
-        print('Error: No se pudo decodificar la respuesta JSON.')
     except Exception as e:
-        print(f'Error inesperado: {e}')    
+        manejar_excepcion(e)  
 #actualizar_dato(1, 'Moni Smith', 'monismith@hotmail.com', 'cometario de ejemplo para prueba2')
 
 
@@ -109,14 +97,6 @@ def eliminar_dato(id):
         respuesta = peticion.json()
         print(respuesta, 'Dato eliminado')
 
-    except requests.ConnectionError:
-        print('Error: No se pudo conectar al servidor.')
-    except requests.Timeout:
-        print('Error: La solicitud ha superado el tiempo.')
-    except requests.HTTPError as e:
-        print(f'Error HTTP: {e.response.status_code} - {e.response.reason}')
-    except json.JSONDecodeError:
-        print('Error: No se pudo decodificar la respuesta JSON.')
     except Exception as e:
-        print(f'Error inesperado: {e}')
+        manejar_excepcion(e)
 #eliminar_dato(501)
